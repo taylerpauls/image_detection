@@ -3,9 +3,10 @@
 """
 Created on Fri Nov 23 17:09:10 2018
 
-@author: athar
+@author: athar and nooshin joon
 """
 import tensorflow as tf
+keep_prob_=0.9
 
 def rgbd_dataset_generator(dataset_name, batch_size):
     pass
@@ -100,7 +101,9 @@ def mdl_rgb_d(x_rbg,x_depth):
    
    pool_flatR = tf.contrib.layers.flatten(poolR5, scope='pool2flat')
    fcR6 = tf.layers.dense(inputs=pool_flatR, units=4096, activation=tf.nn.relu)
-   fcR7 = tf.layers.dense(inputs=fcR6, units=4096, activation=tf.nn.relu)
+   fcR6Drop=tf.nn.dropout(fcR6,keep_prob_)
+   fcR7 = tf.layers.dense(inputs=fcR6Drop, units=4096, activation=tf.nn.relu)
+   fcR7Drop=tf.nn.dropout(fcR7,keep_prob_)
     
    """
      define the stram for the depth images
@@ -171,7 +174,9 @@ def mdl_rgb_d(x_rbg,x_depth):
    
    pool_flatD = tf.contrib.layers.flatten(poolD5, scope='pool2flat')
    fcD6 = tf.layers.dense(inputs=pool_flatD, units=4096, activation=tf.nn.relu)
+   fcD6Drop=tf.nn.dropout(fcD6,keep_prob_)
    fcD7 = tf.layers.dense(inputs=fcD6, units=4096, activation=tf.nn.relu)
+   fcD7Drop=tf.nn.dropout(fcD7,keep_prob_)
    """
    fc8 = tf.contrib.layers.fully_connected (
             inputs = tf.concat((fcR7, fcD7), axis=1),
@@ -184,7 +189,7 @@ def mdl_rgb_d(x_rbg,x_depth):
             activation_fn=tf.nn.relu)
    
    """
-   fc8 = tf.layers.dense(inputs=tf.concat((fcR7, fcD7), axis=1), units=4096, activation=tf.nn.relu)
+   fc8 = tf.layers.dense(inputs=tf.concat((fcR7Drop, fcD7Drop), axis=1), units=4096, activation=tf.nn.relu)
    fc9 = tf.layers.dense(inputs=fc8, units=51)
    
    
