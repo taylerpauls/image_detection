@@ -88,13 +88,13 @@ def mdl_rgb_d(x_rbg,x_depth):
                                     strides=2)   # strides of the pooling operation 
    
    
-   fcR6 = tf.layers.conv2d(
-            inputs = poolR5,
+   fcR6 =  tf.contrib.layers.fully_connected (
+            inputs = poolD5,
             num_outputs = 4096,
             activation_fn=tf.nn.relu)
    
-   fcR7 = tf.layers.conv2d(
-            inputs = fcR6,
+   fcR7 = tf.contrib.layers.fully_connected (
+            inputs = fcD6,
             num_outputs = 4096,
             activation_fn=tf.nn.relu)
     
