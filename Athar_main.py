@@ -88,15 +88,19 @@ def mdl_rgb_d(x_rbg,x_depth):
                                     strides=2)   # strides of the pooling operation 
    
    
-   fcR6 =  tf.contrib.layers.fully_connected (
-            inputs = poolD5,
-            num_outputs = 4096,
-            activation_fn=tf.nn.relu)
+#   fcR6 =  tf.contrib.layers.fully_connected (
+#            inputs = poolD5,
+#            num_outputs = 4096,
+#            activation_fn=tf.nn.relu)
+#   
+#   fcR7 = tf.contrib.layers.fully_connected (
+#            inputs = fcD6,
+#            num_outputs = 4096,
+#            activation_fn=tf.nn.relu)
    
-   fcR7 = tf.contrib.layers.fully_connected (
-            inputs = fcD6,
-            num_outputs = 4096,
-            activation_fn=tf.nn.relu)
+   pool_flatR = tf.contrib.layers.flatten(poolR5, scope='pool2flat')
+   fcR6 = tf.layers.dense(inputs=pool_flatR, units=4096, activation=tf.nn.relu)
+   fcR7 = tf.layers.dense(inputs=fcR6, units=4096, activation=tf.nn.relu)
     
    """
      define the stram for the depth images
@@ -155,16 +159,20 @@ def mdl_rgb_d(x_rbg,x_depth):
                                     strides=2)   # strides of the pooling operation 
    
    
-   fcD6 =  tf.contrib.layers.fully_connected (
-            inputs = poolD5,
-            num_outputs = 4096,
-            activation_fn=tf.nn.relu)
+#   fcD6 =  tf.contrib.layers.fully_connected (
+#            inputs = poolD5,
+#            num_outputs = 4096,
+#            activation_fn=tf.nn.relu)
+#   
+#   fcD7 = tf.contrib.layers.fully_connected (
+#            inputs = fcD6,
+#            num_outputs = 4096,
+#            activation_fn=tf.nn.relu)
    
-   fcD7 = tf.contrib.layers.fully_connected (
-            inputs = fcD6,
-            num_outputs = 4096,
-            activation_fn=tf.nn.relu)
-   
+   pool_flatD = tf.contrib.layers.flatten(poolR5, scope='pool2flat')
+   fcD6 = tf.layers.dense(inputs=pool_flatD, units=4096, activation=tf.nn.relu)
+   fcD7 = tf.layers.dense(inputs=fcD6, units=4096, activation=tf.nn.relu)
+   """
    fc8 = tf.contrib.layers.fully_connected (
             inputs = tf.concat((fcR7, fcD7), axis=1),
             num_outputs = 4096,
@@ -174,6 +182,12 @@ def mdl_rgb_d(x_rbg,x_depth):
             inputs = fc8,
             num_outputs = 51,
             activation_fn=tf.nn.relu)
+   
+   """
+   fc8 = tf.layers.dense(inputs=tf.concat((fcR7, fcD7), axis=1), units=4096, activation=tf.nn.relu)
+   fc9 = tf.layers.dense(inputs=fc8, units=51)
+   
+   
    """
    pool_flat = tf.contrib.layers.flatten(pool2, scope='pool2flat')
    dense = tf.layers.dense(inputs=pool_flat, units=500, activation=tf.nn.relu)
