@@ -169,7 +169,7 @@ def mdl_rgb_d(x_rbg,x_depth):
 #            num_outputs = 4096,
 #            activation_fn=tf.nn.relu)
    
-   pool_flatD = tf.contrib.layers.flatten(poolR5, scope='pool2flat')
+   pool_flatD = tf.contrib.layers.flatten(poolD5, scope='pool2flat')
    fcD6 = tf.layers.dense(inputs=pool_flatD, units=4096, activation=tf.nn.relu)
    fcD7 = tf.layers.dense(inputs=fcD6, units=4096, activation=tf.nn.relu)
    """
